@@ -3,7 +3,10 @@ from:
 https://documentation.sas.com/?cdcId=pgmsascdc&cdcVersion=9.4_3.5&docsetId=mcrolref&docsetTarget=n0js70lrkxo6uvn1fl4a5aafnlgt.htm&locale=en
 
 example usage:
-%list_files(c:\temp,sas)
+
+For some reason this just hangs on me...
+
+%list_files('/folders/myshortcuts/SASUniversityEdition/myfolders/final_exam/', '.sas')
 
 */
 %macro list_files(dir,ext);
@@ -34,47 +37,65 @@ example usage:
 %mend list_files;
 
 
+
 /*
 Gets the size of a table
 
 example usage:
-%get_table_size(my_data, answer);
-
+%let rows = %row_count(tablename = sashelp.class);
+%put rows is equal to &rows;
 */
-%macro get_table_size(inset,macvar); 
- data _null_; 
-  set &inset.; NOBS=size; 
-  call symput(&macvar.,size); 
- stop; 
- run; 
-%mend; 
+%macro row_count (tablename =);
+  %* OBS method uses SCL to open a table, get the row count, close it and return the row count
+     so it works like a function.;
+    %local dsid obs; 
+    %let dsid = %sysfunc(open(&tablename)); 
+    %if &dsid %then %let obs = %sysfunc(attrn(&dsid, nlobs)); 
+    %let tmp_varlist = &obs;
+    %let dsid = %sysfunc(close(&dsid)); 
+    &obs
+%mend row_count; 
+
 
 
 /*
-Gets a specific cell from a data set
+Gets a specific cell from a data set. 
+Beware: this is not a function style macro---it sets a global macro variable that might be manipulated before or after the call.
 
 example usage:
-%ExtractACell(my_data, 3, colname);
+
+%let storage_var = nothing;
+%ExtractACell(dataset=derp,rownum=3,var_name=b)
+%put &storage_var;
+%let storage_var = nothing;
 
 */
-
-%macro ExtractACell(dataset, rownum=1, var_name=Make); */
+%macro ExtractACell(dataset=, rownum=1, var_name=Make); 
 data _null_; 
-	set &dataset. (obs=&rownum. firstobs=&rownum. keep = &var_name.);	/
-	call symputx(storage_var, &var_name., "G"); 
+	set &dataset. (obs=&rownum. firstobs=&rownum. keep = &var_name.);	
+	call symputx("storage_var", &var_name., "G"); 
     stop;
 run;
 %mend ExtractACell;
 
 
-
 /* 
 prints success if somethign is true, and prints fail otherwise
+
+example usage:
+
+%let myvar = 3;
+%print_res(&myvar, 3)
 */
-%macro print_res(tOrFalse);
-    %if &tOrFalse = 1 %then %do;
-        %put "--------------------------------------------------------\n success!";
+%macro print_res(val, expec);
+    %if &val = &expec %then %do;
+        %put "--------------------------------------------------------";
+        %put "                 success!                               ";
+        %put "--------------------------------------------------------";        
+        %end;
     %else %do;
-        %put "--------------------------------------------------------\n fail";
+        %put "--------------------------------------------------------";
+        %put "                 fail :(                                ";
+        %put "--------------------------------------------------------";        
     %end;
 %mend;
