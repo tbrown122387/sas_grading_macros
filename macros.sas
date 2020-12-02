@@ -42,7 +42,7 @@ Gets the size of a table
 
 example usage:
 %let rows = %row_count(tablename = sashelp.class);
-%put rows is equal to &rows;
+%put &=rows;
 */
 %macro row_count (tablename =);
   %* OBS method uses SCL to open a table, get the row count, close it and return the row count
@@ -55,6 +55,26 @@ example usage:
     &obs
 %mend row_count; 
 
+
+
+/*
+Gets the number of columns in a table
+
+example usage:
+%let cols = %col_count(tablename = sashelp.class);
+%put &=cols;
+*/
+
+%macro col_count (tablename =);
+  %* OBS method uses SCL to open a table, get the row count, close it and return the row count
+     so it works like a function.;
+    %local dsid vars; 
+    %let dsid = %sysfunc(open(&tablename)); 
+    %if &dsid %then %let vars = %sysfunc(attrn(&dsid, nvars)); 
+    %let tmp_varlist = &vars;
+    %let dsid = %sysfunc(close(&dsid)); 
+    &vars
+%mend col_count; 
 
 
 /*
