@@ -4,9 +4,8 @@ https://documentation.sas.com/?cdcId=pgmsascdc&cdcVersion=9.4_3.5&docsetId=mcrol
 
 example usage:
 
-For some reason this just hangs on me...
+%list_files(/folders/myshortcuts/SASUniversityEdition/myfolders/submissions/, sas)
 
-%list_files('/folders/myshortcuts/SASUniversityEdition/myfolders/final_exam/', '.sas')
 
 */
 %macro list_files(dir,ext);
