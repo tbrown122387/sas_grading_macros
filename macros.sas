@@ -104,10 +104,10 @@ prints success if somethign is true, and prints fail otherwise
 example usage:
 
 %let myvar = 3;
-%print_res(&myvar, 3)
+%print_res(val=myvar, expec=3)
 */
-%macro print_res(val, expec);
-    %if &val = &expec %then %do;
+%macro print_res(val=, expec=);
+    %if &&&val = &&expec %then %do;
         %put "--------------------------------------------------------";
         %put "                 success!                               ";
         %put "--------------------------------------------------------";        
@@ -118,3 +118,4 @@ example usage:
         %put "--------------------------------------------------------";        
     %end;
 %mend;
+
