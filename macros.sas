@@ -8,7 +8,7 @@ example usage:
 
 
 */
-%macro list_files(dir,ext) / store source;
+%macro list_files(dir,ext);
   %local filrf rc did memcnt name i;
   %let rc=%sysfunc(filename(filrf,&dir));
   %let did=%sysfunc(dopen(&filrf));      
@@ -44,7 +44,7 @@ example usage:
 %let rows = %row_count(tablename = sashelp.class);
 %put &=rows;
 */
-%macro row_count (tablename =) / store source;
+%macro row_count (tablename =);
   %* OBS method uses SCL to open a table, get the row count, close it and return the row count
      so it works like a function.;
     %local dsid obs; 
@@ -65,7 +65,7 @@ example usage:
 %put &=cols;
 */
 
-%macro col_count (tablename =) / store source;
+%macro col_count (tablename =);
   %* OBS method uses SCL to open a table, get the row count, close it and return the row count
      so it works like a function.;
     %local dsid vars; 
@@ -85,11 +85,9 @@ example usage:
 
 %let storage_var = nothing;
 %ExtractACell(dataset=derp,rownum=3,var_name=b)
-%put &storage_var;
-%let storage_var = nothing;
-
+%put &=storage_var;
 */
-%macro ExtractACell(dataset=, rownum=1, var_name=Make) / store source; 
+%macro ExtractACell(dataset=, rownum=1, var_name=Make); 
 data _null_; 
 	set &dataset. (obs=&rownum. firstobs=&rownum. keep = &var_name.);	
 	call symputx("storage_var", &var_name., "G"); 
@@ -106,7 +104,7 @@ example usage:
 %let myvar = 3;
 %print_res(val=myvar, expec=3)
 */
-%macro print_res(val=, expec=) / store source;
+%macro print_res(val=, expec=);
     %if &&&val = &&expec %then %do;
         %put "--------------------------------------------------------";
         %put "                 success!                               ";
@@ -128,7 +126,7 @@ example usage:
 
 %print_test_name(name=1)
 */
-%macro print_test_name(name=) / store source;
+%macro print_test_name(name=);
         %put "--------------------------------------------------------";
         %put "                 TEST: &name                            ";
         %put "--------------------------------------------------------";        
