@@ -97,7 +97,7 @@ run;
 
 
 /* 
-prints success if somethign is true, and prints fail otherwise
+prints success if somethign is equal to another character string, and prints fail otherwise
 
 example usage:
 
@@ -105,7 +105,6 @@ example usage:
 %print_res(val=myvar, expec=3)
 */
 %macro print_res(val=, expec=);
-	%put "&&expec";
     %if "&&&val" = "&&expec" %then %do;
         %put "--------------------------------------------------------";
         %put "                 success!                               ";
@@ -117,6 +116,32 @@ example usage:
         %put "--------------------------------------------------------";        
     %end;
 %mend;
+
+
+/* 
+prints success if somethign is close to another numeric number, and prints fail otherwise
+
+example usage:
+
+%let derp = 3.3;
+%print_res_close(val=derp, expec=3.301, tol=.0000001);
+*/
+
+%macro print_res_close(val=, expec=, tol=);
+	%if %sysevalf(%sysfunc(abs(&&&val - &&expec)) < &&tol) %then %do;
+	    %put "--------------------------------------------------------";
+        %put "                 success!                               ";
+        %put "--------------------------------------------------------";        
+        %end;
+    %else %do;
+        %put "--------------------------------------------------------";
+        %put "                 fail :(                                ";
+        %put "--------------------------------------------------------";        
+    %end;
+
+%mend;
+
+
 
 
 
