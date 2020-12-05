@@ -105,7 +105,8 @@ example usage:
 %print_res(val=myvar, expec=3)
 */
 %macro print_res(val=, expec=);
-    %if &&&val = &&expec %then %do;
+	%put "&&expec";
+    %if "&&&val" = "&&expec" %then %do;
         %put "--------------------------------------------------------";
         %put "                 success!                               ";
         %put "--------------------------------------------------------";        
